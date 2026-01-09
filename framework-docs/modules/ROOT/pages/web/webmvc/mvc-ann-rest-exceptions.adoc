@@ -66,6 +66,13 @@ from an existing `ProblemDetail`. This could be done centrally, for example, fro
 `@ControllerAdvice` such as `ResponseEntityExceptionHandler` that re-creates the
 `ProblemDetail` of an exception into a subclass with the additional non-standard fields.
 
+TIP: In Spring Boot, the `spring.mvc.problemdetails.enabled` property autoconfigures
+a `ResponseEntityExceptionHandler` that handles built-in exceptions with problem details.
+In that case, you may prefer to create another `@ControllerAdvice` instead of extending
+`ResponseEntityExceptionHandler` if you want to take over the handling of a specific
+built-in exception. You'll need to ensure your handler is ordered ahead of the one
+configured by Spring Boot whose order is 0.
+
 
 [[mvc-ann-rest-exceptions-i18n]]
 == Customization and i18n
@@ -184,7 +191,7 @@ Message codes and arguments for each error are also resolved via `MessageSource`
 |===
 
 NOTE: Unlike other exceptions, the message arguments for
-`MethodArgumentValidException` and `HandlerMethodValidationException` are based on a list of
+`MethodArgumentNotValidException` and `HandlerMethodValidationException` are based on a list of
 `MessageSourceResolvable` errors that can also be customized through a
 xref:core/beans/context-introduction.adoc#context-functionality-messagesource[MessageSource]
 resource bundle. See

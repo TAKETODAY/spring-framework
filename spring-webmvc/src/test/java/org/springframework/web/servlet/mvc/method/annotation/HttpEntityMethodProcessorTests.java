@@ -162,7 +162,9 @@ public class HttpEntityMethodProcessorTests {
 
 		List<HttpMessageConverter<?>> converters = new ArrayList<>();
 		converters.add(new JacksonJsonHttpMessageConverter());
-		HttpEntityMethodProcessor processor = new HttpEntityMethodProcessor(converters);
+		List<Object> requestResponseBodyAdvice = new ArrayList<>();
+		requestResponseBodyAdvice.add(new ContextClassRequestBodyAdvice());
+		HttpEntityMethodProcessor processor = new HttpEntityMethodProcessor(converters, requestResponseBodyAdvice);
 
 		@SuppressWarnings("unchecked")
 		HttpEntity<SimpleBean> result = (HttpEntity<SimpleBean>)

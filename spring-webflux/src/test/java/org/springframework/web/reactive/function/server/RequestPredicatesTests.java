@@ -22,10 +22,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.web.accept.ApiVersionHolder;
 import org.springframework.web.accept.SemanticApiVersionParser;
 import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.accept.ApiVersionStrategy;
@@ -374,13 +376,13 @@ class RequestPredicatesTests {
 		ApiVersionStrategy versionStrategy = apiVersionStrategy();
 		Comparable<?> parsedVersion = versionStrategy.parseVersion(version);
 		MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("https://localhost"));
-		exchange.getAttributes().put(HandlerMapping.API_VERSION_ATTRIBUTE, parsedVersion);
+		exchange.getAttributes().put(HandlerMapping.API_VERSION_ATTRIBUTE, ApiVersionHolder.fromVersion(parsedVersion));
 		return new DefaultServerRequest(exchange, Collections.emptyList(), versionStrategy);
 	}
 
 	private static DefaultApiVersionStrategy apiVersionStrategy() {
 		return new DefaultApiVersionStrategy(
-				List.of(exchange -> null), new SemanticApiVersionParser(), true, null, false, null, null);
+				List.of(exchange -> Mono.empty()), new SemanticApiVersionParser(), true, null, false, null, null);
 	}
 
 }
